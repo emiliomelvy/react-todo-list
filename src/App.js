@@ -12,14 +12,14 @@ function App() {
     {
       id: '1',
       value: 'testk',
-      status: false,
+      status: true,
       date: '2023-03-10'
     },
     {
       id: '2',
       value: 'yow',
       status: true,
-      date: '2023-03-10'
+      date: '2023-03-11'
     },
   ])
 
@@ -50,36 +50,32 @@ function App() {
 
   const [dateValue, setDateValue] = React.useState('')
 
-  const getDate = (e) => {
-    setDateValue(e.target.value)
-  }
-
   const [filter, setFilter] = React.useState('All');
 
   const getSort = (e) => {
-    const sortedTodos = [...todo]
-    if(e.target.value === '-- Sort By --') return
-    if(e.target.value === 'Ascending') {
-      sortedTodos.sort((a, b) => {
-        if(a.date < b.date) return -1
-        if(a.date > b.date) return 1
+    const filteredTodos = todo.filter(x => x.status === true)
+    if (e.target.value === '-- Sort By --') return
+    let sortedTodos
+    if (e.target.value === 'Ascending') {
+      sortedTodos = [...filteredTodos].sort((a, b) => {
+        if (a.date < b.date) return -1
+        if (a.date > b.date) return 1
         return 0
       })
-      return setTodo(sortedTodos)
+    } else if (e.target.value === 'Descending') {
+      sortedTodos = [...filteredTodos].sort((a, b) => {
+        if (a.date > b.date) return -1
+        if (a.date < b.date) return 1
+        return 0
+      })
     }
-    else if (e.target.value === 'Descending') {
-      sortedTodos.sort((a, b) => {
-        if (a.date > b.date) return -1;
-        if (a.date < b.date) return 1;
-        return 0;
-      });
-      return setTodo(sortedTodos)
-    }
+    if (sortedTodos) return setTodo(sortedTodos.concat(todo.filter(x => x.status === false)))
   }
+
   
 
   return (
-    <div>
+    <div className='xl:max-w-5xl container mx-auto'>
       {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" /> */}
         <div className='flex justify-center gap-5 pt-10'>
@@ -90,7 +86,7 @@ function App() {
         <div className='border-b max-w-6xl mx-auto pb-10'>
           <div className='pt-14 flex justify-center gap-5'>
             <input onChange={e => { updateTask(e) }} value={newTask} type="text" placeholder='Add New ..' className='border border-pink-500 rounded h-14 px-6' />
-            <input onClick={e => { getDate(e) }} onChange={e => getDate(e)} value={dateValue} type="date" min="2023-03-10" className='rounded border border-pink-500 px-2'/>
+            <input onClick={e => { setDateValue(e.target.value) }} onChange={e => setDateValue(e.target.value)} value={dateValue} type="date" min="2023-03-10" className='rounded border border-pink-500 px-2'/>
             <button onClick={addTask} className='text-white bg-cyan-500 py-2.5 px-3 rounded'>Add</button>
           </div>
         </div>
@@ -104,7 +100,6 @@ function App() {
               <select value={filter} onChange={(e) => setFilter(e.target.value)} name="filter" id="filter" className='border rounded px-3'>
                 <option value="All">All</option>
                 <option value="Completed">Completed</option>
-                <option value="Active">Active</option>
                 <option value="Has Due Date">Has Due Date</option>
               </select>
             </div>
@@ -124,18 +119,19 @@ function App() {
            .filter(x => {
             if (filter === 'All') return true
             else if (filter === 'Completed') return !x.status
-            else if (filter === 'Active') return x.status
-            else if (filter === 'Has Due Date') return x.date !== ''
+            else if (filter === 'Has Due Date') return x.status
           })
           .map((x, index) => {
             return (
-              <React.Fragment key={index}>
-                <div className='flex gap-1'>
-                  <input onClick={() => checkState(x.status, index)} type="checkbox" />
-                  <p className={x.status ? 'text-2xl' : 'text-2xl line-through'}>
-                    {x.value}
-                  </p>
-                  <p>
+              <React.Fragment key={x.id}>
+                <div className='flex gap-1 justify-between group'>
+                  <div className='flex gap-3'>
+                    <input checked={!x.status} onChange={() => true} onClick={() => checkState(x.status, index)} type="checkbox" className='accent-cyan-400 focus:accent-cyan-500 w-6 h-6 mt-3' />
+                    <p className={x.status ? 'text-4xl' : 'text-4xl line-through'}>
+                      {x.value}
+                    </p>
+                  </div>
+                  <p className={x.status ? 'hidden group-hover:block' : 'hidden'}>
                     {x.date.toString()}
                   </p>
                 </div>
