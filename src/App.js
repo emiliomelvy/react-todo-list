@@ -1,8 +1,8 @@
-import React from 'react';
-// import logo from './logo.svg';
-import './App.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import React from 'react'
+// import logo from './logo.svg'
+import './App.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheckCircle, faTrash, faPen, faInfoCircle, faEdit, faAdd } from '@fortawesome/free-solid-svg-icons'
 
 
 
@@ -10,13 +10,13 @@ function App() {
 
   const [todo, setTodo] = React.useState([
     {
-      id: '1',
+      id: Math.random(),
       value: 'testk',
       status: true,
       date: '2023-03-10'
     },
     {
-      id: '2',
+      id: Math.random(),
       value: 'yow',
       status: true,
       date: '2023-03-11'
@@ -24,9 +24,25 @@ function App() {
   ])
 
   const [newTask, setNewTask] = React.useState('')
+  const [toggleAdd, setToggleAdd] = React.useState(true)
+
+  const [isEditItem, setIsEditItem] = React.useState(null)
 
   const addTask = () => {
-    let num = todo.length + 1
+    if(newTask && toggleAdd === false) {
+      return setTodo(
+        todo.map(val => {
+          if(isEditItem && val.id === isEditItem) {
+            return {...val, value: newTask, date: dateValue}
+          }
+          setNewTask('')
+          setDateValue('')
+          setToggleAdd(true)
+          return val
+        })
+      )
+    }
+    let num = Math.random()
     if(dateValue === '') return
     let newTodo = {id: num.toString(), value: newTask, status: true, date: dateValue}
     setTodo([...todo, newTodo])
@@ -72,6 +88,22 @@ function App() {
     if (sortedTodos) return setTodo(sortedTodos.concat(todo.filter(x => x.status === false)))
   }
 
+  const deleteTodos = (id) => {
+    const deletedTodo = [...todo].filter(val => {
+      return val.id !== id
+    })
+    setTodo(deletedTodo)
+  }
+
+  const editTodos = (id) => {
+    let newEdit = todo.find(el => {
+      return el.id === id
+    })
+    setNewTask(newEdit.value)
+    setIsEditItem(id)
+    setDateValue(newEdit.date)
+    setToggleAdd(false)
+  }
   
 
   return (
@@ -87,7 +119,13 @@ function App() {
           <div className='pt-14 flex justify-center gap-5'>
             <input onChange={e => { updateTask(e) }} value={newTask} type="text" placeholder='Add New ..' className='border border-pink-500 rounded h-14 px-6' />
             <input onClick={e => { setDateValue(e.target.value) }} onChange={e => setDateValue(e.target.value)} value={dateValue} type="date" min="2023-03-10" className='rounded border border-pink-500 px-2'/>
-            <button onClick={addTask} className='text-white bg-cyan-500 py-2.5 px-3 rounded'>Add</button>
+            {
+              toggleAdd 
+              ? 
+              <FontAwesomeIcon onClick={addTask} icon={faAdd} className="cursor-pointer text-cyan-500 text-2xl my-auto" /> 
+              : 
+              <FontAwesomeIcon onClick={addTask} icon={faEdit} className="cursor-pointer text-cyan-500 text-2xl my-auto" />
+            }
           </div>
         </div>
 
@@ -118,22 +156,32 @@ function App() {
           { todo
            .filter(x => {
             if (filter === 'All') return true
-            else if (filter === 'Completed') return !x.status
-            else if (filter === 'Has Due Date') return x.status
+            else if (filter === 'Completed') return x.status === false
+            else if (filter === 'Has Due Date') return x.status === true
           })
           .map((x, index) => {
             return (
               <React.Fragment key={x.id}>
-                <div className='flex gap-1 justify-between group'>
+                <div className='flex pt-5 gap-1 justify-between group'>
                   <div className='flex gap-3'>
                     <input checked={!x.status} onChange={() => true} onClick={() => checkState(x.status, index)} type="checkbox" className='accent-cyan-400 focus:accent-cyan-500 w-6 h-6 mt-3' />
                     <p className={x.status ? 'text-4xl' : 'text-4xl line-through'}>
                       {x.value}
                     </p>
                   </div>
-                  <p className={x.status ? 'hidden group-hover:block' : 'hidden'}>
-                    {x.date.toString()}
-                  </p>
+                  <div className=''>
+                  {/* {x.status ? 'hidden group-hover:block' : 'hidden'} */}
+                    <div className='flex gap-4 justify-end'>
+                      <FontAwesomeIcon onClick={() => editTodos(x.id)} icon={faPen} className="text-cyan-500 text-xl my-auto cursor-pointer" />
+                      <FontAwesomeIcon onClick={() => deleteTodos(x.id)} icon={faTrash} className="text-cyan-500 text-xl my-auto cursor-pointer" />
+                    </div>
+                    <div className='flex gap-4 pt-3'>
+                    <FontAwesomeIcon icon={faInfoCircle} className="text-slate-500 text-xl my-auto" />
+                    <p className='my-auto'>
+                      {x.date.toString()}
+                    </p>
+                    </div>
+                  </div>
                 </div>
               </React.Fragment>
             )
