@@ -6,6 +6,11 @@ import Item from "./components/Item";
 import FilterSort from "./components/FilterSort";
 
 function App() {
+  const [filter, setFilter] = React.useState("All");
+  const [newTask, setNewTask] = React.useState("");
+  const [toggleAdd, setToggleAdd] = React.useState(true);
+  const [isEditItem, setIsEditItem] = React.useState(null);
+  const [dateValue, setDateValue] = React.useState("2023-03-16");
   const [todo, setTodo] = React.useState([
     {
       id: Math.random(),
@@ -33,11 +38,6 @@ function App() {
     }
   }, []);
 
-  const [newTask, setNewTask] = React.useState("");
-  const [toggleAdd, setToggleAdd] = React.useState(true);
-
-  const [isEditItem, setIsEditItem] = React.useState(null);
-
   const addTask = () => {
     if (newTask && toggleAdd === false) {
       return setTodo(
@@ -55,7 +55,7 @@ function App() {
     let num = Math.random();
     if (dateValue === "" || newTask === "") return;
     let newTodo = {
-      id: num.toString(),
+      id: num,
       value: newTask,
       status: true,
       date: dateValue,
@@ -78,10 +78,6 @@ function App() {
   const updateTask = (e) => {
     setNewTask(e.target.value);
   };
-
-  const [dateValue, setDateValue] = React.useState("2023-03-16");
-
-  const [filter, setFilter] = React.useState("All");
 
   const getSort = (e) => {
     const filteredTodos = todo.filter((x) => x.status === true);
@@ -157,7 +153,7 @@ function App() {
                 key={index}
                 onCheckState={(id) => checkState(id)}
                 onEditTodos={(id) => editTodos(id)}
-                ondeleteTodos={(id) => deleteTodos(id)}
+                onDeleteTodos={(id) => deleteTodos(id)}
                 onAddTask={() => addTask}
               />
             );
