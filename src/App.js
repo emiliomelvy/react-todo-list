@@ -10,19 +10,19 @@ function App() {
   const [newTask, setNewTask] = React.useState("");
   const [toggleAdd, setToggleAdd] = React.useState(true);
   const [isEditItem, setIsEditItem] = React.useState(null);
-  const [dateValue, setDateValue] = React.useState("2023-03-16");
+  const [dateValue, setDateValue] = React.useState(new Date());
   const [todo, setTodo] = React.useState([
     {
       id: Math.random(),
       value: "testk",
       status: true,
-      date: "2023-03-10",
+      date: new Date(),
     },
     {
       id: Math.random(),
       value: "yow",
       status: true,
-      date: "2023-03-11",
+      date: new Date(),
     },
   ]);
 
@@ -43,7 +43,7 @@ function App() {
       return setTodo(
         todo.map((val) => {
           if (isEditItem && val.id === isEditItem) {
-            return { ...val, value: newTask, date: dateValue };
+            return { ...val, value: newTask, date: new Date(dateValue) };
           }
           setNewTask("");
           setDateValue("");
@@ -58,7 +58,7 @@ function App() {
       id: num,
       value: newTask,
       status: true,
-      date: dateValue,
+      date: new Date(dateValue),
     };
     setTodo([...todo, newTodo]);
     setNewTask("");
@@ -118,6 +118,11 @@ function App() {
     setDateValue(newEdit.date);
     setToggleAdd(false);
   };
+
+  const dateEditor = (val) => {
+    return JSON.stringify(val).slice(1, 11);
+  };
+
   return (
     <div className="xl:max-w-5xl container mx-auto">
       <Title />

@@ -10,6 +10,10 @@ const Input = (props) => {
     props.onSetDateValue(val);
   };
 
+  const dateEditor = (val) => {
+    return JSON.stringify(val).slice(1, 11);
+  };
+
   return (
     <div className="border-b max-w-6xl mx-auto pb-10">
       <div className="pt-14 flex justify-center gap-5">
@@ -27,7 +31,7 @@ const Input = (props) => {
             setDateValue(e.target.value);
           }}
           onChange={(e) => setDateValue(e.target.value)}
-          value={props.dateValue}
+          value={dateEditor(props.dateValue)}
           type="date"
           min="2023-03-16"
           className="rounded border border-pink-500 px-2"

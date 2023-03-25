@@ -19,6 +19,10 @@ const Item = (props) => {
     props.onDeleteTodos(id);
   };
 
+  const dateEditor = (val) => {
+    return JSON.stringify(val).slice(1, 11);
+  };
+
   return (
     <React.Fragment key={props.id}>
       <div className="flex pt-5 gap-1 justify-between group">
@@ -51,7 +55,7 @@ const Item = (props) => {
               icon={faInfoCircle}
               className="text-slate-500 text-xl my-auto"
             />
-            <p className="my-auto">{props.date.toString()}</p>
+            <p className="my-auto">{dateEditor(props.date)}</p>
           </div>
         </div>
       </div>
