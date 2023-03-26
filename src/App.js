@@ -1,17 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import Title from "./components/Title";
 import Input from "./components/Input";
 import Item from "./components/Item";
 import FilterSort from "./components/FilterSort";
+import LoggedIn from "./components/LoggedIn";
 
 function App() {
-  const [filter, setFilter] = React.useState("All");
-  const [newTask, setNewTask] = React.useState("");
-  const [toggleAdd, setToggleAdd] = React.useState(true);
-  const [isEditItem, setIsEditItem] = React.useState(null);
-  const [dateValue, setDateValue] = React.useState(new Date());
-  const [todo, setTodo] = React.useState([
+  const [filter, setFilter] = useState("All");
+  const [newTask, setNewTask] = useState("");
+  const [toggleAdd, setToggleAdd] = useState(true);
+  const [isEditItem, setIsEditItem] = useState(null);
+  const [dateValue, setDateValue] = useState(new Date());
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isValidEmail, setIsValidEmail] = useState(false);
+  const [isValidPassword, setIsValidPassword] = useState(false);
+  const [buttonLogin, setButtonLogin] = useState(false);
+  const [todo, setTodo] = useState([
     {
       id: Math.random(),
       value: "testk",
@@ -124,47 +129,61 @@ function App() {
   };
 
   return (
-    <div className="xl:max-w-5xl container mx-auto">
-      <Title />
-      <Input
-        newTask={newTask}
-        dateValue={dateValue}
-        onUpdateTask={(val) => updateTask(val)}
-        onSetDateValue={(val) => setDateValue(val)}
-        toggleAdd={toggleAdd}
-        onAddTask={addTask}
-      />
-      <section>
-        <FilterSort
-          filter={filter}
-          onSetFilter={(val) => setFilter(val)}
-          onGetSort={(val) => getSort(val)}
+    <>
+      {isLoggedIn ? (
+        <div className="xl:max-w-5xl container mx-auto">
+          <Title />
+          <Input
+            newTask={newTask}
+            dateValue={dateValue}
+            onUpdateTask={(val) => updateTask(val)}
+            onSetDateValue={(val) => setDateValue(val)}
+            toggleAdd={toggleAdd}
+            onAddTask={addTask}
+          />
+          <section>
+            <FilterSort
+              filter={filter}
+              onSetFilter={(val) => setFilter(val)}
+              onGetSort={(val) => getSort(val)}
+            />
+            {todo
+              .filter((x) => {
+                return filter === "Completed"
+                  ? x.status === false
+                  : filter === "Has Due Date"
+                  ? x.status === true
+                  : true;
+              })
+              .map((x, index) => {
+                return (
+                  <Item
+                    id={x.id}
+                    value={x.value}
+                    status={x.status}
+                    date={x.date}
+                    key={index}
+                    onCheckState={(id) => checkState(id)}
+                    onEditTodos={(id) => editTodos(id)}
+                    onDeleteTodos={(id) => deleteTodos(id)}
+                    onAddTask={() => addTask}
+                  />
+                );
+              })}
+          </section>
+        </div>
+      ) : (
+        <LoggedIn
+          buttonLogin={buttonLogin}
+          setButtonLogin={(val) => setButtonLogin(val)}
+          isValidEmail={isValidEmail}
+          setValidEmail={(val) => setIsValidEmail(val)}
+          isValidPassword={isValidPassword}
+          setIsValidPassword={(val) => setIsValidPassword(val)}
+          setIsLoggedIn={() => setIsLoggedIn(true)}
         />
-        {todo
-          .filter((x) => {
-            return filter === "Completed"
-              ? x.status === false
-              : filter === "Has Due Date"
-              ? x.status === true
-              : true;
-          })
-          .map((x, index) => {
-            return (
-              <Item
-                id={x.id}
-                value={x.value}
-                status={x.status}
-                date={x.date}
-                key={index}
-                onCheckState={(id) => checkState(id)}
-                onEditTodos={(id) => editTodos(id)}
-                onDeleteTodos={(id) => deleteTodos(id)}
-                onAddTask={() => addTask}
-              />
-            );
-          })}
-      </section>
-    </div>
+      )}
+    </>
   );
 }
 
