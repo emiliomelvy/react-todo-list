@@ -21,10 +21,6 @@ const LoggedIn = ({
     setIsValidPassword(false);
   };
 
-  const loginHandler = () => {
-    if (buttonLogin) setIsLoggedIn(true);
-  };
-
   useEffect(() => {
     setTimeout(() => {
       if (isValidEmail && isValidPassword) setButtonLogin(true);
@@ -76,7 +72,8 @@ const LoggedIn = ({
         </div>
         <div className="flex justify-center">
           <button
-            onClick={() => loginHandler()}
+            disabled={!buttonLogin}
+            onClick={() => setIsLoggedIn(true)}
             className={`py-2 px-10 mt-10 w-11/12 font-bold text-white rounded-full
               ${
                 buttonLogin
