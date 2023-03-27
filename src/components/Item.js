@@ -22,7 +22,6 @@ const Item = (props) => {
   const dateEditor = (val) => {
     return JSON.stringify(val).slice(1, 11);
   };
-
   return (
     <React.Fragment key={props.id}>
       <div className="flex pt-5 gap-1 justify-between group">
@@ -53,7 +52,7 @@ const Item = (props) => {
           <div className="flex gap-4 pt-3">
             <FontAwesomeIcon
               icon={faInfoCircle}
-              className="text-slate-500 text-xl my-auto"
+              className={`text-xl my-auto ${props.priority === 'High' ? 'text-red-500' : props.priority === 'Medium' ? 'text-orange-500' : 'text-slate-500'}`}
             />
             <p className="my-auto">{dateEditor(props.date)}</p>
           </div>

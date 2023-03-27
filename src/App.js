@@ -11,6 +11,7 @@ function App() {
   const [newTask, setNewTask] = useState("");
   const [toggleAdd, setToggleAdd] = useState(true);
   const [isEditItem, setIsEditItem] = useState(null);
+  const [itemPriority, setItemPriority] = useState('')
   const [dateValue, setDateValue] = useState(new Date());
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(false);
@@ -21,12 +22,14 @@ function App() {
       id: Math.random(),
       value: "testk",
       status: true,
+      priority: 'High',
       date: new Date(),
     },
     {
       id: Math.random(),
       value: "yow",
       status: true,
+      priority: 'Medium',
       date: new Date(),
     },
   ]);
@@ -51,11 +54,12 @@ function App() {
       return setTodo(
         todo.map((val) => {
           if (isEditItem && val.id === isEditItem) {
-            return { ...val, value: newTask, date: new Date(dateValue) };
+            return { ...val, value: newTask, priority: itemPriority, date: new Date(dateEditor(dateValue)) };
           }
           setNewTask("");
-          setDateValue("");
+          setDateValue(new Date());
           setToggleAdd(true);
+          setItemPriority('Low')
           return val;
         })
       );
@@ -66,11 +70,13 @@ function App() {
       id: num,
       value: newTask,
       status: true,
-      date: new Date(dateValue),
+      priority: itemPriority,
+      date: new Date(dateEditor(dateValue)),
     };
     setTodo([...todo, newTodo]);
     setNewTask("");
-    setDateValue("");
+    setDateValue(new Date());
+    setItemPriority('Low')
   };
 
   const checkState = (id) => {
@@ -123,8 +129,9 @@ function App() {
     });
     setNewTask(newEdit.value);
     setIsEditItem(id);
-    setDateValue(newEdit.date);
+    setDateValue(new Date(dateEditor(newEdit.date)));
     setToggleAdd(false);
+    setItemPriority(newEdit.priority)
   };
 
   const dateEditor = (val) => {
@@ -139,8 +146,10 @@ function App() {
           <Input
             newTask={newTask}
             dateValue={dateValue}
+            itemPriority={itemPriority}
             onUpdateTask={(val) => updateTask(val)}
             onSetDateValue={(val) => setDateValue(val)}
+            onSetItemPriority={(val) => setItemPriority(val)}
             toggleAdd={toggleAdd}
             onAddTask={addTask}
           />
@@ -164,6 +173,7 @@ function App() {
                     id={x.id}
                     value={x.value}
                     status={x.status}
+                    priority={x.priority}
                     date={x.date}
                     key={index}
                     onCheckState={(id) => checkState(id)}

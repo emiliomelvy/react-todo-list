@@ -14,6 +14,10 @@ const Input = (props) => {
     return JSON.stringify(val).slice(1, 11);
   };
 
+  const setPriority = (val) => {
+    props.onSetItemPriority(val)
+  }
+
   return (
     <div className="border-b max-w-6xl mx-auto pb-10">
       <div className="pt-14 flex justify-center gap-5">
@@ -26,6 +30,11 @@ const Input = (props) => {
           placeholder="Add New .."
           className="border border-pink-500 rounded h-14 px-6"
         />
+        <select onChange={(e) => setPriority(e.target.value)} value={props.itemPriority} name="priority" id="priority" className="rounded border border-pink-500">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
         <input
           onClick={(e) => {
             setDateValue(e.target.value);
