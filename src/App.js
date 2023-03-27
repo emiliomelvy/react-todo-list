@@ -95,7 +95,7 @@ function App() {
 
   const getSort = (e) => {
     const filteredTodos = todo.filter((x) => x.status === true);
-    if (e.target.value === "-- Sort By --") return;
+    if (e.target.value === "-- Sort By Date --") return;
     let sortedTodos;
     if (e.target.value === "Ascending") {
       sortedTodos = [...filteredTodos].sort((a, b) => {
@@ -115,6 +115,37 @@ function App() {
         sortedTodos.concat(todo.filter((x) => x.status === false))
       );
   };
+
+  const sortPriority = (e) => {
+    const filteredTodos = todo.filter(x => x.status)
+    const order = ['Low', 'Medium', 'High']
+    let sortedTodos
+    if (e.target.value === "Ascending") {
+      sortedTodos = [...filteredTodos].sort((a, b) => {
+        if(order.indexOf(a.priority) - order.indexOf(b.priority) < order.indexOf(b.priority) - order.indexOf(b.priority)) {
+          return -1
+        } 
+        if(order.indexOf(a.priority) - order.indexOf(b.priority) > order.indexOf(b.priority) - order.indexOf(b.priority)) {
+          return 1
+        } 
+        return 0
+      })
+    }
+    else if (e.target.value === "Descending") {
+      sortedTodos = [...filteredTodos].sort((a, b) => {
+        // console.log('a :', a)
+        // console.log('b :', b)
+        if(order.indexOf(a.priority) - order.indexOf(b.priority) > order.indexOf(b.priority) - order.indexOf(b.priority)) {
+          return -1
+        } 
+        if(order.indexOf(a.priority) - order.indexOf(b.priority) < order.indexOf(b.priority) - order.indexOf(b.priority)) {
+          return 1
+        } 
+        return 0
+      })
+    }
+    if(sortedTodos) return setTodo(sortedTodos.concat(todo.filter(x => !x.status)))
+  }
 
   const deleteTodos = (id) => {
     const deletedTodo = [...todo].filter((val) => {
@@ -158,6 +189,7 @@ function App() {
               filter={filter}
               onSetFilter={(val) => setFilter(val)}
               onGetSort={(val) => getSort(val)}
+              sortPriority={(val) => sortPriority(val)}
             />
             {todo
               .filter((x) => {
