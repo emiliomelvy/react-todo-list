@@ -12,7 +12,7 @@ const LoggedIn = ({
   setIsLoggedIn,
 }) => {
   const validEmail = (e) => {
-    if (e.target.value.includes("@")) return setValidEmail(true);
+    if (e.target.value.includes("@") && e.target.value.trim().length > 6) return setValidEmail(true);
     setValidEmail(false);
   };
 
@@ -20,6 +20,11 @@ const LoggedIn = ({
     if (e.target.value.trim().length > 6) return setIsValidPassword(true);
     setIsValidPassword(false);
   };
+
+  const login = () => {
+    setIsLoggedIn(true)
+    localStorage.setItem('login', '1')
+  }
 
   useEffect(() => {
     setTimeout(() => {
@@ -73,7 +78,7 @@ const LoggedIn = ({
         <div className="flex justify-center">
           <button
             disabled={!buttonLogin}
-            onClick={() => setIsLoggedIn(true)}
+            onClick={() => login()}
             className={`py-2 px-10 mt-10 w-11/12 font-bold text-white rounded-full
               ${
                 buttonLogin

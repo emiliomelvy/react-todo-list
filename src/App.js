@@ -37,7 +37,10 @@ function App() {
 
   const newItem = JSON.parse(localStorage.getItem("todos"));
 
+  const userLogin = localStorage.getItem('login')
+
   useEffect(() => {
+    if (userLogin === '1') setIsLoggedIn(true)
     if (newItem) {
       setTodo(newItem);
     }
@@ -132,7 +135,7 @@ function App() {
     <>
       {isLoggedIn ? (
         <div className="xl:max-w-5xl container mx-auto">
-          <Title />
+          <Title setIsLoggedIn={setIsLoggedIn} />
           <Input
             newTask={newTask}
             dateValue={dateValue}
